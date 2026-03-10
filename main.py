@@ -1,10 +1,14 @@
 # Tu implementacion va aqui
 import random
 import pandas as pd
+from pathlib import Path
+from collections import Counter
 
 def creo_tabla():
     # lee y retorna tabla para anotar tabla_puntos
-    tabla_puntos = pd.read_csv('generala_scoreboard.csv', index_col=0)
+    base_dir = Path(__file__).resolve().parent
+    csv_dir = base_dir / 'generala_scoreboard.csv'
+    tabla_puntos = pd.read_csv(csv_dir, index_col=0)
     return tabla_puntos
 
 
@@ -44,15 +48,22 @@ def opciones(tiro: list) -> list:
 
     return op
 
-def turnos(tabla_):
-    for i in range(len(tabla_.index_col())):
-        for e in range(len(tabla_.columns)):
-            print(i)
+def cant_vuelcos():
+    t = 1
+    tiro = volcar(5)
+    tiro.sort()
+    print(f'1er tiro: {tiro}')
+
+
+def juego(tabla_, col_pos):
+    print(tabla_.iloc[:,col_pos])
     return tabla_
-'''
-def juego():
-    return
-'''
+
+def turnos(tabla_):
+    for i in range(len(tabla_.index)):
+        for e in range(len(tabla_.columns)):
+            tabla_ = juego(tabla_, e)
+    return tabla_
 
 def main():
     jugadores = cant_jug()
@@ -60,12 +71,9 @@ def main():
         print('Nadie quiere jugar :(')
     else:
         tabla_puntos = tabla_config(creo_tabla(), jugadores)
-        print(f'Cantidad de jugadores: {jugadores}\n')
-        print('Tabla de Puntos: '+ '\n'*2 + f'{tabla_puntos}')
-        tiro = volcar(2)
-        tiro.sort()
-        print(tiro)
-    
+        print('\nTabla de Puntos: '+ '\n'*2 + f'{tabla_puntos}')
+
+        turnos(tabla_puntos)
 
 
 # No cambiar a partir de aqui
