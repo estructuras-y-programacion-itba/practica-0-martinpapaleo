@@ -63,6 +63,8 @@ def turnos(tabla_):
     for i in range(len(tabla_.index)):
         for e in range(len(tabla_.columns)):
             tabla_ = juego(tabla_, e)
+            stop = input('''Ingrese "STOP": si desea finalizar el juego sin designar un ganador. 
+            Esta accion es irreversible y elimina todo el progreso.''')
     return tabla_
 
 def main():
@@ -73,7 +75,10 @@ def main():
         tabla_puntos = tabla_config(creo_tabla(), jugadores)
         print('\nTabla de Puntos: '+ '\n'*2 + f'{tabla_puntos}')
 
-        turnos(tabla_puntos)
+    try:
+        print('H')
+    except:
+        print('I')
 
 
 # No cambiar a partir de aqui
