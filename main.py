@@ -17,6 +17,7 @@ def tirar_dado():
     return random.randint(1,6)
 
 def volcar(nro: int) -> list:
+    #simula volcar el vaso con cierta cantdidad de dados
     sol = []
     for i in range(nro):
         sol.append(tirar_dado())
@@ -24,7 +25,7 @@ def volcar(nro: int) -> list:
 
 def tabla_config(datos, c_jug: int):
     #elimino columnas innecesarias segun cantidad de jugadores 
-    #modifico los datos tipo NaN a ''
+    #modifico los datos tipo NaN a str = ''
     t = 4
     j = 'Jugador'
     columns_ = []
@@ -36,6 +37,7 @@ def tabla_config(datos, c_jug: int):
     return datos
 
 def cant_jug() -> int:
+    # pide al usuario ingresar una cantidad de jugadores hasta que sea valida
     while True:
         try:
             cant = int(input('Ingrese cantidad de jugadores (1,2,3 o 4): '))
@@ -46,24 +48,48 @@ def cant_jug() -> int:
         except ValueError:
             print('Respete las instrucciones previas!')
 
+def cuento_verifico(tiro: list) -> int:
+    #cuenta cantidad de numeros distintos que hay en el tiro
+    cant_x_num = {1 : 0, 2 : 0, 3 : 0, 4 : 0, 5 : 0, 6 : 0}
+    for i in range(1,6):
+        cant = tiro.count(i)
+        cant_x_num[i] = cant
+    
+def sumo_puntos():
+    # suma los puntos correspondientes a la tabla
+    return ''
+
 def quien_gano(tabla_) -> str:
-    sol = None
+    #al finalizar el juego, revisa la tabla e indica el ganador o si hubo empate
+    sol = 'l'
     return sol
 
-def opciones(tiro: list) -> list:
-    op = []
 
-    return op
+def opciones(tiro: list, nro_tiro: int) -> list:
+
+    sol = []
+
+    return sol
 
 def cant_vuelcos():
-    t = 1
-    tiro = volcar(5)
-    tiro.sort()
-    print(f'1er tiro: {tiro}')
+    # resuelve el resultado de un turno en particular
+    sol = []
+    done = True
+    dados = 5
+    t = 0
+    while t < 3 and done:
+        tiro = volcar(dados)
+        tiro.sort()
+        print(f'Tiro nro. {t} de 3.\n{tiro}')
+        sol = opciones(tiro, t)
+        t += 1
+
+    return sol
 
 
 def juego(tabla_, col_pos):
-    print(f'''Le toca tirar a: {tabla_.columns[col_pos]}''')
+    print(f'Le toca tirar a {tabla_.columns[col_pos]}\n')
+    tiro_final = cant_vuelcos()
     print(tabla_.iloc[1:,col_pos])
     return tabla_
 
@@ -72,8 +98,7 @@ def turnos(tabla_):
     for i in range(len(tabla_.index)):
         for e in range(len(tabla_.columns)):
             tabla_ = juego(tabla_, e)
-            stop = input('''Ingrese "STOP": si desea finalizar el juego sin designar un ganador. 
-            Esta accion es irreversible y elimina todo el progreso.\n''')
+            stop = input('''Ingrese "STOP": si desea finalizar el juego sin designar un ganador.\nEsta accion es irreversible y elimina todo el progreso.\n''')
             if stop == 'STOP':
                 tabla_ = None
                 return tabla_
@@ -85,10 +110,10 @@ def main():
         print('Nadie quiere jugar :(')
     else:
         tabla_puntos = tabla_config(creo_tabla(), jugadores)
-        print('\nTabla de Puntos Actual: '+ '\n'*2 + f'{tabla_puntos}\n')
+        #print('\nTabla de Puntos Actual: '+ '\n'*2 + f'{tabla_puntos}\n')
 
     if not turnos(tabla_puntos):
-        print('Se decidio finalizar el juego. No hay un ganador/a. Se borraron todos los datos del juego.')
+        print('\nSe decidio finalizar el juego. No hay un ganador/a. Se borraron todos los datos del juego.')
     else:
         sol = turnos(tabla_puntos)
         ganador = quien_gano(sol)
