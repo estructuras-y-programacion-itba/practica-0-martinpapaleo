@@ -23,6 +23,8 @@ def volcar(nro: int) -> list:
     return sol
 
 def tabla_config(datos, c_jug: int):
+    #elimino columnas innecesarias segun cantidad de jugadores 
+    #modifico los datos tipo NaN a ''
     t = 4
     j = 'Jugador'
     columns_ = []
@@ -30,6 +32,7 @@ def tabla_config(datos, c_jug: int):
         columns_.append(j+str(t))
         t -= 1
     datos = datos.drop(columns=columns_)
+    datos = datos[datos.isnull()].fillna('')
     return datos
 
 def cant_jug() -> int:
@@ -42,6 +45,10 @@ def cant_jug() -> int:
                 raise ValueError
         except ValueError:
             print('Respete las instrucciones previas!')
+
+def quien_gano(tabla_) -> str:
+    sol = None
+    return sol
 
 def opciones(tiro: list) -> list:
     op = []
@@ -56,15 +63,20 @@ def cant_vuelcos():
 
 
 def juego(tabla_, col_pos):
-    print(tabla_.iloc[:,col_pos])
+    print(f'''Le toca tirar a: {tabla_.columns[col_pos]}''')
+    print(tabla_.iloc[1:,col_pos])
     return tabla_
 
 def turnos(tabla_):
+    # simula todos los turnos y ofrece la opcion de finalizar abruptamente luego de cualquier jugada
     for i in range(len(tabla_.index)):
         for e in range(len(tabla_.columns)):
             tabla_ = juego(tabla_, e)
             stop = input('''Ingrese "STOP": si desea finalizar el juego sin designar un ganador. 
-            Esta accion es irreversible y elimina todo el progreso.''')
+            Esta accion es irreversible y elimina todo el progreso.\n''')
+            if stop == 'STOP':
+                tabla_ = None
+                return tabla_
     return tabla_
 
 def main():
@@ -73,13 +85,21 @@ def main():
         print('Nadie quiere jugar :(')
     else:
         tabla_puntos = tabla_config(creo_tabla(), jugadores)
-        print('\nTabla de Puntos: '+ '\n'*2 + f'{tabla_puntos}')
+        print('\nTabla de Puntos Actual: '+ '\n'*2 + f'{tabla_puntos}\n')
 
-    try:
-        print('H')
-    except:
-        print('I')
+    if not turnos(tabla_puntos):
+        print('Se decidio finalizar el juego. No hay un ganador/a. Se borraron todos los datos del juego.')
+    else:
+        sol = turnos(tabla_puntos)
+        ganador = quien_gano(sol)
+        
+        print(f'''Tabla final: 
+        {sol}
+        El ganador/a es {ganador}, felicidades!!!
 
+        Juego finalizado.
+        ''')
+        
 
 # No cambiar a partir de aqui
 if __name__ == "__main__":
