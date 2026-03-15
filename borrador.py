@@ -1,4 +1,4 @@
-cant_x_num = {1 : 0, 2 : 0, 3 : 0, 4 : 0, 5 : 0, 6 : 0}
-cant_x_num[1] = 32
-sol = [1,1,2]
-print(sol.count(1))
+dic_ = {1:0, 2:2}
+x = [1,2,3,4]
+if x in [1,2,3,4]:
+    print(True)
