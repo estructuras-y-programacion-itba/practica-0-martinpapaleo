@@ -37,12 +37,12 @@ def tabla_config(datos, c_jug: int):
     # elimina columnas innecesarias segun cantidad de jugadores 
     # elimina filas innecesarias para todas las columnas: Subtotal y Bonus
     # modifica los datos tipo NaN a str = ''
-    t = 4
+    nro_tiro = 4
     j = 'Jugador'
     columns_ = []
-    while c_jug < t:
-        columns_.append(j+str(t))
-        t -= 1
+    while c_jug < nro_tiro:
+        columns_.append(j+str(nro_tiro))
+        nro_tiro -= 1
     datos = datos.drop(columns=columns_)
     datos = datos[datos.isnull()].fillna('')
     datos = datos.drop(['Subtotal', 'Bonus'])
@@ -116,31 +116,54 @@ def quien_gano(tabla_) -> str:
     sol = 'l'
     return sol
 
-def cant_vuelcos():
-    # resuelve el resultado de un turno en particular
+def fijo_dados(tiro_: list, nro_tiro) -> list:
+    # valida y retorna lista con los dados que el jugador desea fijar
     sol = []
-    done = True
-    dados = 5
-    t = 0
-    while t < 3 and not done:
-        tiro = volcar(dados)
-        tiro.sort()
-        print(f'Tiro nro. {t} de 3.\n{tiro}')
-        cant_x_num = cuento_dados(tiro)
-        sol, done = opciones(tiro, t)
-        t += 1
+    tiro = tiro_
+    while True:
+        try:
+            sol.append(int(input('Ingrese los numeros que desea fijar de su tiro sin espacios, si desea tirar todos los dados nuevamente, ingrese 0')))
+            if sol[0] == 0:
+                return sol
+            if len(sol > len(tiro)):
+                raise ValueError
+            for i in str(sol):
+                if int(i) not in tiro:
+                    raise ValueError
+                else:
+                    tiro.remove(int(i))
+                    sol.append(i)
+            return sol.sort()
+        except ValueError:
+            print('Respete las instrucciones previas!')
     return sol
+    
+def cant_vuelcos(tabla_, col_pos):
+    # anota el resultado de un turno en la tabla de puntos
+    turno = True
+    dados = 5
+    nro_tiro = 1
+    sol = []
+    while nro_tiro <= 3 and turno:
+        tiro = volcar(dados - len(sol))
+        tiro.sort()
+        print(f'Tiro nro. {nro_tiro} de 3: \n{tiro}')
+        sol = fijo_dados(tiro, nro_tiro)
+        nro_tiro += 1
+    cant_x_num = cuento_dados(tiro)
+    return tabla_
 
 def juego(tabla_, col_pos):
     # indica a quien le toca tirar y muestra su tabla de puntos
-    print(f'Le toca tirar a {tabla_.columns[col_pos]}\n')
-    tiro_final = cant_vuelcos()
-    print(tabla_.iloc[1:,col_pos])
+    # llama a funciones que resuelven anotar los puntos del turno actual
+    print(f'''\nTabla de Puntos: \n{tabla_}\n
+    Le toca tirar a {tabla_.columns[col_pos]}\n''')
+    cant_vuelcos(tabla_, col_pos)
     return tabla_
 
 def turnos(tabla_):
     # simula todos los turnos y ofrece la opcion de finalizar abruptamente luego de cualquier jugada
-    for i in range(len(tabla_.index)):
+    for i in range(len(tabla_.index) - 1): # se resta uno porque la fila 'Total' no se incluye, se calcula automaticamente por otra funcion.
         for e in range(len(tabla_.columns)):
             tabla_ = juego(tabla_, e)
             stop = input('''Ingrese "STOP": si desea finalizar el juego sin designar un ganador.\nEsta accion es irreversible y elimina todo el progreso.\n''')
@@ -155,7 +178,6 @@ def main():
         print('Nadie quiere jugar :(')
     else:
         tabla_puntos = tabla_config(creo_tabla(), jugadores)
-        print('\nTabla de Puntos Actual: '+ '\n'*2 + f'{tabla_puntos}\n')
     if not turnos(tabla_puntos):
         print('\nSe decidio finalizar el juego. No hay un ganador/a. Se borraron todos los datos del juego.')
     else:
