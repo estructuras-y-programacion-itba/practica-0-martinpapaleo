@@ -1,0 +1,3 @@
+# Para correrlo en terminal windows imprimir: py -m pip install -r requirements.txt
+pandas as pd
+matplotlib as 
