@@ -1,13 +1,20 @@
 class Cliente():
+    tel_clientes = []
     def __init__(self,nombre,correo,telefono):
         #Validaciones
+        if telefono in Cliente.tel_clientes:
+            raise ValueError(f'Error, el tel {telefono} ya existe!')
         Cliente.validar_tel(telefono)
 
         # creacion de instancia
         self.nombre = nombre
         self.correo = correo
         self.telefono = telefono
-        self.lista_pedidos = []
+
+
+        # modifico atributo de clase
+        Cliente.tel_clientes.append(telefono)
+
     def getternombre(self):
         return self.nombre
     def gettercorreo(self):
@@ -32,14 +39,26 @@ class Cliente():
             raise ValueError(f'el atributo "{telefono_}" debe ser string!')
         if not (10 <= len(telefono_)<= 12):           
             raise ValueError(f'el atributo {telefono_} debe tener entre 10 y 12 caracteres!')
-
+        try:
+            for num in telefono_:
+                int(num)
+        except ValueError:
+            print(f'Error: todos los caracteres deben ser numericos')
+# buscar libreria _str_ 
 
 try:
-    pedro = Cliente('Pedro', 'pedro@gmail.com', 12)
+    pedro = Cliente('Pedro', 'pedro@gmail.com', '1234567890')
     print(pedro.telefono)
+    
+    mati = Cliente('Matias', 'mati@gmail.com', 'a12345678ab')
+    print(mati.telefono)
     
     joaco = Cliente('Joaco', 'joaco@gmail.com', '1234567')
     print(joaco.telefono)
+
+    luca = Cliente('Luca', 'luca@gmail.com', '1234567890')
+    print(luca.telefono)
+
 except ValueError as e:
     print(f'Error: {e}')
 
