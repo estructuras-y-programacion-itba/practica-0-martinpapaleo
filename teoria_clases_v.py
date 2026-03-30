@@ -1,20 +1,3 @@
-'''
-Cliente 
-Atributos de Instancia: nombre, correo electrónico, teléfono, pedidos[] 
-Métodos de Instancia:
-getters : nombre, correo electrónico, teléfono porque necesita ser leido desde otra clase 
-setters: nombre, correo electrónico, teléfono porque pueden modificarse tiempo ejecución realizar pedido eliminar pedido ver pedidos
-
-4 principios de la progra orientada a objetos:
-
-abstraccion: ver el mismo problema desde distintos puntos de vista, para resaltar y diferenciar las caracteristicas / variables mas importantes
-modularidad: las clases deben estar fraccionadas en distintas partes, ordenadas y organizadas
-encapsulamiento: interfaz que permite acceder a informacion o utilizar algo con muy poco conocimiento, al igual deben ser las clases
-jerarquia: 
-
-
-
-'''
 class Cliente():
     # construir cliente
     # cualquier funcion dentro de una clase se le llama metodo de esa clase.
